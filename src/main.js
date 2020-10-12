@@ -1,4 +1,4 @@
-import 'markdown-it/dist/markdown-it';
+import '../node_modules/markdown-it/dist/markdown-it.js';
 import mathupPlugin from "./markdown-it-plugin-mathup.js";
 
 const md = window.markdownit();
