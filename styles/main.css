@@ -1,5 +1,59 @@
+body {
+  block-size: 100vh;
+  column-gap: 1em;
+  display: grid;
+  grid-template:
+    "sidebar input output"
+    / 14ch auto 1fr;
+  margin: 0;
+}
+
+.sidebar {
+  background: #3d4a22;
+  color: wheat;
+  grid-area: sidebar;
+}
+
+.sidebar .title {
+  display: block;
+  margin-block: 1em;
+  text-align: center;
+}
+
+.sidebar a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sidebar .create-new {
+  background: forestgreen;
+  border-radius: 3px;
+  color: gold;
+  padding: 0.5ex 1ex;
+}
+
+.input {
+  display: flex;
+  grid-area: input;
+  inline-size: 42ch;
+  flex-flow: column;
+}
+
+.input textarea {
+  flex-grow: 1;
+}
+
+.output {
+  grid-area: output;
+}
+
 @media print {
-  #input {
+  body {
+    display: block;
+  }
+
+  .sidebar,
+  .input {
     display: none;
   }
 }
