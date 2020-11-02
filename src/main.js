@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     url.searchParams.set("notebook", id);
     window.history.pushState({ notebook: id }, "", url);
     currentNotebook = notebook;
-    title.value = notebook.title;
+    titleInput.value = notebook.title;
     input.value = notebook.body;
     render();
   }
@@ -97,10 +97,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (currentNotebook) {
-      title.value = currentNotebook.title;
+      titleInput.value = currentNotebook.title;
       input.value = currentNotebook.body;
     } else {
-      title.value = "";
+      titleInput.value = "";
       input.value = "";
     }
 
@@ -122,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cursor = await tx.store.openCursor(currentNotebook.id);
     const current = { ...cursor.value };
 
-    current.title = title.value;
+    current.title = titleInput.value;
     current.body = input.value;
     current.updatedAt = new Date();
 
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   input.addEventListener("input", debounce(500, render));
   input.addEventListener("input", debounce(1000, save));
-  title.addEventListener(
+  titleInput.addEventListener(
     "input",
     debounce(500, () => {
       save();
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (anchor) {
-        anchor.textContent = title.value || "untitled";
+        anchor.textContent = titleInput.value || "untitled";
       }
     })
   );
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
 
     await save();
-    title.value = "";
+    titleInput.value = "";
     input.value = "";
     render();
 
@@ -166,6 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const id = await db.add("notebooks", notebook);
+
+    currentNotebook = { id, ...notebook };
 
     const li = document.createElement("li");
     const anchor = document.createElement("a");
@@ -194,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (notebook) {
       currentNotebook = notebook;
-      title.value = notebook.title;
+      titleInput.value = notebook.title;
       input.value = notebook.body;
       render();
     }
