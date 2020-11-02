@@ -9,9 +9,28 @@
   </head>
 
   <body>
-    <textarea id="input"></textarea>
+    <aside class="sidebar">
+      <strong class="title">Tage Notebook</strong>
 
-    <main>
+      <nav>
+        <ul id="notebook-list"></ul>
+
+        <a id="new-notebook" href="/new" class="create-new">
+          <strong>Create new</strong>
+        </a>
+      </nav>
+    </aside>
+
+    <div class="input">
+      <label>
+        Title
+        <input id="title" />
+      </label>
+
+      <textarea id="input"></textarea>
+    </div>
+
+    <main class="output">
       <article id="output"></article>
     </main>
   </body>
