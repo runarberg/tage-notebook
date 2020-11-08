@@ -5,6 +5,20 @@ import mathupPlugin from "./markdown-it-plugin-mathup.js";
 const md = window.markdownit();
 md.use(mathupPlugin);
 
+function displayTitle(notebook) {
+  if (notebook.title) {
+    return notebook.title;
+  }
+
+  const match = notebook.body.match(/^#\s+(.+)(\s+#)?\s*(\n|$)/);
+
+  if (match?.length > 0) {
+    return match[1];
+  }
+
+  return "untitled";
+}
+
 async function startDB() {
   const notebookDB = await openDB("Notebooks", 1, {
     upgrade(db) {
@@ -38,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const newNotebookAnchor = document.getElementById("new-notebook");
   const notebookList = document.getElementById("notebook-list");
   const input = document.getElementById("input");
-  const titleInput = document.getElementById("title");
   const output = document.getElementById("output");
   let currentNotebook;
 
@@ -52,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     url.searchParams.set("notebook", id);
     window.history.pushState({ notebook: id }, "", url);
     currentNotebook = notebook;
-    titleInput.value = notebook.title;
     input.value = notebook.body;
     render();
   }
@@ -81,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement("li");
       const anchor = document.createElement("a");
 
-      anchor.textContent = notebook.title || "untitled";
+      anchor.textContent = displayTitle(notebook);
       anchor.href = `?notebook=${notebook.id}`;
       anchor.addEventListener("click", async (event) => {
         event.preventDefault();
@@ -97,10 +109,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (currentNotebook) {
-      titleInput.value = currentNotebook.title;
       input.value = currentNotebook.body;
     } else {
-      titleInput.value = "";
       input.value = "";
     }
 
@@ -122,7 +132,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const cursor = await tx.store.openCursor(currentNotebook.id);
     const current = { ...cursor.value };
 
-    current.title = titleInput.value;
     current.body = input.value;
     current.updatedAt = new Date();
 
@@ -133,26 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   input.addEventListener("input", debounce(500, render));
   input.addEventListener("input", debounce(1000, save));
-  titleInput.addEventListener(
-    "input",
-    debounce(500, () => {
-      save();
-
-      const anchor = document.querySelector(
-        `a[href="?notebook=${currentNotebook.id}"]`
-      );
-
-      if (anchor) {
-        anchor.textContent = titleInput.value || "untitled";
-      }
-    })
-  );
 
   newNotebookAnchor.addEventListener("click", async (event) => {
     event.preventDefault();
 
     await save();
-    titleInput.value = "";
     input.value = "";
     render();
 
@@ -196,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (notebook) {
       currentNotebook = notebook;
-      titleInput.value = notebook.title;
       input.value = notebook.body;
       render();
     }
