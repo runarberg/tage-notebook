@@ -69,6 +69,102 @@ document.addEventListener("DOMContentLoaded", () => {
     render();
   }
 
+  function createNotebookLi(notebook) {
+    const li = document.createElement("li");
+
+    li.className = "notebook";
+
+    const anchor = document.createElement("a");
+    const editField = document.createElement("input");
+    const editButton = document.createElement("button");
+    const doneButton = document.createElement("button");
+
+    async function saveEdit() {
+      anchor.textContent = displayTitle({
+        ...notebook,
+        title: editField.value,
+      });
+
+      startingDB.then(async (db) => {
+        const tx = db.transaction("notebooks", "readwrite");
+        const cursor = await tx.store.openCursor(notebook.id);
+        const current = { ...cursor.value };
+
+        current.title = editField.value;
+        cursor.update(current);
+
+        tx.done;
+      });
+
+      li.replaceChildren(anchor, editButton);
+    }
+
+    function cancelEdit() {
+      document.removeEventListener("click", onDocumentClick);
+      document.removeEventListener("keydown", onDocumentKeydown);
+
+      li.replaceChildren(anchor, editButton);
+    }
+
+    function onDocumentClick(event) {
+      if (!li.contains(event.target)) {
+        cancelEdit();
+      }
+    }
+
+    function onDocumentKeydown(event) {
+      if (event.key === "Escape") {
+        cancelEdit();
+      }
+    }
+
+    anchor.textContent = displayTitle(notebook);
+    anchor.href = `?notebook=${notebook.id}`;
+    anchor.addEventListener("click", async (event) => {
+      event.preventDefault();
+      navigateToNotebook(notebook.id);
+    });
+
+    editField.className = "edit-field";
+    editField.value = notebook.title;
+    editField.placeholder = displayTitle({ ...notebook, title: "" });
+    editField.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+
+        document.removeEventListener("keydown", onDocumentKeydown);
+        saveEdit();
+      }
+    });
+
+    editButton.className = "edit-button";
+    editButton.textContent = "(edit)";
+    editButton.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      li.replaceChildren(editField, doneButton);
+      editField.focus();
+
+      window.requestAnimationFrame(() => {
+        document.addEventListener("click", onDocumentClick);
+        document.addEventListener("keydown", onDocumentKeydown);
+      });
+    });
+
+    doneButton.className = "done-button";
+    doneButton.textContent = "(done)";
+    doneButton.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      document.removeEventListener("click", onDocumentClick);
+      saveEdit();
+    });
+
+    li.append(anchor, editButton);
+
+    return li;
+  }
+
   startingDB.then(async (db) => {
     {
       const url = new URL(window.location);
@@ -90,18 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         lastOpened = notebook;
       }
 
-      const li = document.createElement("li");
-      const anchor = document.createElement("a");
-
-      anchor.textContent = displayTitle(notebook);
-      anchor.href = `?notebook=${notebook.id}`;
-      anchor.addEventListener("click", async (event) => {
-        event.preventDefault();
-        navigateToNotebook(notebook.id);
-      });
-
-      li.appendChild(anchor);
-      notebookList.appendChild(li);
+      notebookList.appendChild(createNotebookLi(notebook));
     }
 
     if (lastOpened) {
@@ -163,19 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentNotebook = { id, ...notebook };
 
-    const li = document.createElement("li");
-    const anchor = document.createElement("a");
+    const li = createNotebookLi({ id, ...notebook });
 
-    anchor.textContent = "untitled";
-    anchor.href = `?notebook=${id}`;
-    anchor.addEventListener("click", async (event) => {
-      event.preventDefault();
-      navigateToNotebook(id);
-    });
-
-    li.appendChild(anchor);
-    notebookList.appendChild(li);
-
+    notebookList.append(li);
     window.history.pushState({ notebook: id }, "", anchor.href);
   });
 

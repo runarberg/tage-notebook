@@ -64,9 +64,39 @@ body {
   text-align: center;
 }
 
-.sidebar a {
+.sidebar .notebooks {
+  list-style: none;
+  margin-block: 1em;
+  padding: 0;
+}
+
+.sidebar .notebook {
+  align-items: center;
+  display: flex;
+  margin-block: 0.5ex;
+}
+
+.sidebar .notebook a {
   color: inherit;
   text-decoration: none;
+}
+
+.sidebar .notebook .edit-field {
+  background: transparent;
+  border: none;
+  border-block-end: 1px solid wheat;
+  color: wheat;
+  inline-size: calc(100% - 5.5ch);
+}
+
+.sidebar .notebook .edit-button,
+.sidebar .notebook .done-button {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-size: 0.75em;
+  margin-inline-start: auto;
+  padding: 0;
 }
 
 .sidebar .create-new {
