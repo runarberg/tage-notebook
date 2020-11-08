@@ -40,7 +40,7 @@
 
 body {
   background: #efebca;
-  min-block-size: 100vh;
+  block-size: 100vh;
   display: grid;
   gap: 2em 1em;
   grid-template:
@@ -55,6 +55,7 @@ body {
   background: #3d4a22;
   color: wheat;
   grid-area: sidebar;
+  overflow-y: auto;
 }
 
 .sidebar .title {
@@ -80,16 +81,21 @@ body {
   grid-area: input;
   inline-size: 42ch;
   flex-flow: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .input textarea {
   flex-grow: 1;
+  scrollbar-width: thin;
 }
 
 .output {
   background: white;
   padding: 1ex 2em;
   grid-area: output;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .output {
