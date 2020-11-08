@@ -1,10 +1,53 @@
+@font-face {
+  font-family: "Latin Modern Math";
+  src: url("../assets/fonts/latin-modern/latin-modern-math.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Latin Modern Roman";
+  src: url("../assets/fonts/latin-modern/latin-modern-roman-regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Latin Modern Roman";
+  src: url("../assets/fonts/latin-modern/latin-modern-roman-bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Latin Modern Roman";
+  src: url("../assets/fonts/latin-modern/latin-modern-roman-italic.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Latin Modern Roman";
+  src: url("../assets/fonts/latin-modern/latin-modern-roman-bolditalic.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: italic;
+}
+
 body {
-  block-size: 100vh;
-  column-gap: 1em;
+  background: #efebca;
+  min-block-size: 100vh;
   display: grid;
+  gap: 2em 1em;
   grid-template:
-    "sidebar input output"
-    / 14ch auto 1fr;
+    "sidebar .     .      ." 0
+    "sidebar input output ." 1fr
+    "sidebar .     .      ." 0
+    / 14ch auto 1fr 0;
   margin: 0;
 }
 
@@ -26,9 +69,9 @@ body {
 }
 
 .sidebar .create-new {
-  background: forestgreen;
+  background: gold;
   border-radius: 3px;
-  color: gold;
+  color: black;
   padding: 0.5ex 1ex;
 }
 
@@ -44,16 +87,37 @@ body {
 }
 
 .output {
+  background: white;
+  padding: 1ex 2em;
   grid-area: output;
+}
+
+.output {
+  font-family: "Latin Modern Roman", serif;
+}
+
+.output h1 {
+  font-size: 3em;
+  text-align: center;
+}
+
+.output math {
+  font-family: "Latin Modern Math", math;
 }
 
 @media print {
   body {
+    background: transparent;
     display: block;
   }
 
   .sidebar,
   .input {
     display: none;
+  }
+
+  .output {
+    background: transparent;
+    padding: 0;
   }
 }
