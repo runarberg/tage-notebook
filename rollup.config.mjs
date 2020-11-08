@@ -11,6 +11,7 @@ export default {
     copy({
       targets: [
         { src: "styles/*.css", dest: "dist/styles/" },
+        { src: "assets/**/*", dest: "dist/assets/" },
         { src: "LICENSE.txt", dest: "dist/" },
       ],
       flatten: false,
